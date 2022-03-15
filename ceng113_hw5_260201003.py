@@ -1,10 +1,5 @@
 # Umutcan CEYHAN 260201003  
 import numpy
-import sys
-import io
-
-sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
-sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
 
 class Game():
     def __init__(self,map_width,map_height,init_time, action_cost):
@@ -29,6 +24,10 @@ class Game():
         self.generate_map()
         # The Game prints the current status on the screen.
         self.update_screen()
+
+    # For each square, put wood with probability of 0.3, put dirt with probability of 0.3,
+    # put water with probability of 0.2 or leave empty with probability of 0.2. You have
+    # to use 'numpy.random.randint' function.   
     def generate_map(self):
         for row in range(self.mapheight):
             for col in range(self.mapwidth):
@@ -41,9 +40,7 @@ class Game():
                      self.map[row][col] = "water"
                 else:
                      self.map[row][col] = "empty"
-        # For each square, put wood with probability of 0.3, put dirt with probability of 0.3,
-        # put water with probability of 0.2 or leave empty with probability of 0.2. You have
-        # to use 'numpy.random.randint' function.          
+               
     def show_controls(self):        
         print()
         print("**************************** Game Control ****************************")
@@ -84,7 +81,7 @@ class Game():
     def check_safety(self):
         # This function checks if the player is in a shelter. It should be called
         # at the end of each successfully executed action to check if the game 
-        # has finished. You do not have to do anything here.
+        # has finished.
         wall_map = numpy.zeros((game.mapwidth+2,game.mapheight+2)).astype(int)
         wall_map_bool = [numpy.in1d(row, ['brick','plank']) for row in game.map]
         wall_map[1:-1,1:-1] = numpy.array(wall_map_bool).astype(int)
@@ -114,17 +111,20 @@ class Game():
     def move_player(self,direction):
         self.player.move(direction)
         self.update_screen()
+    # Pick item using the player object's pick method and update the map if 
+    # there is an item to pick, otherwise print "There is nothing to pick!".    
     def pick_item(self):
-        ppx = self.player.pos[0]    #satır  Row
-        ppy = self.player.pos[1]    #sütun  Column
+        ppx = self.player.pos[0]    #Row
+        ppy = self.player.pos[1]    #Column
         if (self.map[ppx][ppy] == "empty"):
             print("There is nothing to pick!")
         else:
             self.player.pick(self.map[ppx][ppy])  #Picks the item where it is
             self.map[ppx][ppy] = "empty"
             self.update_screen()
-        # Pick item using the player object's pick method and update the map if 
-        # there is an item to pick, otherwise print "There is nothing to pick!".     
+     # Put the given item using the player object's put method if the current
+    # square is empty, otherwise print ""There is nowhere to put!". If the
+    # player scan successfully put the item, update the map.     
     def put_item(self,item):
         ppx = self.player.pos[0]
         ppy = self.player.pos[1]
@@ -133,10 +133,9 @@ class Game():
             self.update_screen()
         else:
             print("There is nowhere to put!")
-        # Put the given item using the player object's put method if the current
-        # square is empty, otherwise print ""There is nowhere to put!". If the
-        # player scan successfully put the item, update the map.
-        pass
+       
+    # Make the given item using the player object's corresponding method. If
+    # the player can not make the item, print "Not enough material!".
     def make(self,item):
         if(item == "e"):
             if(self.player.make_plank()):
@@ -149,8 +148,7 @@ class Game():
             else:
                 print("Not enough material!")
                 
-        # Make the given item using the player object's corresponding method. If
-        # the player can not make the item, print "Not enough material!".
+        
 
 class Player():
     def __init__(self):
@@ -306,21 +304,22 @@ class Time():
                 return False
             return True
 
-        
+    # Shows the remaning time in hours and mins format
     def show_time(self):
         print("{} hours {} minutes left!!!".format(self.hours, self.mins))
 
-
+# CONSTANTS 
 MAP_WIDTH = 10
 MAP_HEIGHT = 10
 ACTION_COST = 15 #minutes
 INIT_TIME = 16   #hours
-person =u"\u2687"        #u'U'                  #u'\u267f'                       #u'\u2687'                       
-happy = u"\u263b"
+person =u"\u2687"  #character      #u'U'                  #u'\u267f'                       #u'\u2687'                       
+happy = u"\u263b"  # happy character
 COLORS = {'empty':'\033[40m   \033[0m', 'wood ':'\033[42m   \033[0m',
           'dirt ':'\033[47m   \033[0m', 'water':'\033[46m   \033[0m',
           'plank':'\033[43m   \033[0m', 'brick':'\033[41m   \033[0m'}
-    
+          
+# Constant moves, items and products 
 moves = {"w":"up", "s":"down", "a":"left", "d":"right"}
 items = {"1":"brick", "2":"dirt ", "3":"plank", "4":"water", "5":"wood "}
 products = {"e":"plank", "r":"brick"}
