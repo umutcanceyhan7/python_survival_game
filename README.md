@@ -1,7 +1,11 @@
 # python_survival_game
 ## A Survival Game that you can play via terminal. 
 
-## You can start game by typing the code
+## For those who have not installed numpy, you must install this library. You can use this official documentation below 
+```
+https://numpy.org/install/
+```
+## You can start game by typing the code if you have numpy installed
 ```
 python ceng113_hw5_260201003.py
 ```
